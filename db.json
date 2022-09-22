@@ -1,0 +1,35 @@
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "json-server",
+      "author": "typicode"
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    },
+    {
+      "body": "cvbjnkm,",
+      "id": 5
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  },
+  "data": [
+    {
+      "FirstName": "Sayoni",
+      "LastName": "Pandit",
+      "id": 3
+    },
+    {
+      "FirstName": "Saaayoni",
+      "LastName": "Pandit",
+      "id": 4
+    }
+  ]
+}
