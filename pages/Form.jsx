@@ -1,25 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 function Form() {
-  const InputList = ({ FirstName, LastName, id }) => {
-    const handleDelete = (id) => {
-      axios.delete(`http://localhost:8000/data/${id}`)
-      .then((res)=>{
-        window.location.reload()
-      })
-    };
-
-    return (
-      <div style={{ display: "flex" }}>
-        <div style={{ width: "10%" }}>{FirstName}</div>
-        <div style={{ width: "10%" }}>{LastName}</div>
-        <div style={{ width: "10%" }}>
-          <button onClick={() => handleDelete(id)}>Delete</button>
-        </div>
-      </div>
-    );
-  };
+  const router = useRouter();
 
   const [FName, setFName] = useState("");
   const handleChangeFName = (e) => {
@@ -30,14 +14,6 @@ function Form() {
   const handleChangeLName = (e) => {
     setLName(e.target.value);
   };
-
-  const [Data, setData] = useState([]);
-
-  useEffect(() => {
-    axios.get("http://localhost:8000/data").then((res) => {
-      setData(res.data);
-    });
-  }, []);
 
   const handleSubmitForm = () => {
     // const res = await fetch("http://localhost:8000/comments", {
@@ -54,31 +30,45 @@ function Form() {
       FirstName: FName,
       LastName: LName,
     };
-
+    if (router.query.data) {
+      axios
+        .put(`http://localhost:8000/data/${router.query.data}`, Data)
+        .then((res) => {
+          router.push("/UserList");
+        });
+    }
     axios.post("http://localhost:8000/data", Data).then((res) => {
-      console.log(Data);
-      window.location.reload()
+      router.push("/UserList");
     });
   };
+
+  useEffect(() => {
+    if (router.query.data) {
+      axios
+        .get(`http://localhost:8000/data/${router.query.data}`)
+        .then((res) => {
+          setFName(res.data.FirstName);
+          setLName(res.data.LastName);
+        });
+    }
+  }, []);
 
   return (
     <div>
       <div>
-        <input type="text" value={FName} onChange={handleChangeFName} />
-        <input type="text" value={LName} onChange={handleChangeLName} />
+        <input
+          type="text"
+          value={FName}
+          onChange={handleChangeFName}
+          placeholder="First name"
+        />
+        <input
+          type="text"
+          value={LName}
+          onChange={handleChangeLName}
+          placeholder="Last name"
+        />
         <button onClick={handleSubmitForm}>Submit</button>
-      </div>
-      <div>
-        {Data.map((data) => {
-          return (
-            <InputList
-              key={data.id}
-              FirstName={data.FirstName}
-              LastName={data.LastName}
-              id={data.id}
-            />
-          );
-        })}
       </div>
     </div>
   );
